@@ -1,0 +1,61 @@
+{
+  "gallery": [
+    {
+      "title": "",
+      "size": "",
+      "medium": "",
+      "notes": "",
+      "image": "UpsideDownSelfPortrait.jpeg"
+    },
+    {
+      "title": "",
+      "size": "",
+      "medium": "",
+      "notes": "",
+      "image": "Weible.jpg"
+    },
+    {
+      "title": "",
+      "size": "",
+      "medium": "",
+      "notes": "",
+      "image": "TrappedRelease.jpeg"
+    },
+    {
+      "title": "",
+      "size": "",
+      "medium": "",
+      "notes": "",
+      "image": "SchoolFever.jpg"
+    },
+    {
+      "title": "title",
+      "size": "a x a in",
+      "medium": "water on water",
+      "notes": "love this one",
+      "wide": true,
+      "image": "HopperCopyCopy.jpeg"
+    },
+    {
+      "title": "title",
+      "size": "a x a in",
+      "medium": "water on water",
+      "notes": "love this one",
+      "image": "Dad.jpeg"
+    },
+    {
+      "title": "",
+      "size": "",
+      "medium": "",
+      "notes": "",
+      "image": "BalloonSelfPortrait.jpg"
+    },
+    {
+      "title": "",
+      "size": "",
+      "medium": "",
+      "notes": "",
+      "image": "Aquaduct.jpeg"
+    }
+  ]
+}

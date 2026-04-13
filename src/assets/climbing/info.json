@@ -1,0 +1,56 @@
+{
+    "gallery": [
+        {
+            "description": "A challenging climb up the rocky terrains.",
+            "image": "climbing1.jpg"
+        },
+        {
+            "title": "Test 2",
+            "description": "Capturing the beauty of a sunset from the peak.",
+            "image": "climbing2.jpg"
+        },
+        {
+            "title": "Test 3",
+            "image": "climbing3.jpg"
+        },
+        {
+            "description": "A challenging climb up the rocky terrains.",
+            "image": "climbing1copy.jpg"
+        },
+        {
+            "title": "Test 2",
+            "description": "Capturing the beauty of a sunset from the peak.",
+            "image": "climbing2copy.jpg"
+        },
+        {
+            "title": "Test 3",
+            "image": "climbing3copy.jpg"
+        },
+        {
+            "description": "A challenging climb up the rocky terrains.",
+            "image": "climbing1copy2.jpg"
+        },
+        {
+            "title": "Test 2",
+            "description": "Capturing the beauty of a sunset from the peak.",
+            "image": "climbing2copy2.jpg"
+        },
+        {
+            "title": "Test 3",
+            "image": "climbing3copy2.jpg"
+        },
+        {
+            "description": "A challenging climb up the rocky terrains.",
+            "image": "climbing1copy3.jpg"
+        },
+        {
+            "title": "Test 2",
+            "description": "Capturing the beauty of a sunset from the peak.",
+            "image": "climbing2copy3.jpg"
+        },
+        {
+            "title": "Test 3",
+            "image": "climbing3copy3.jpg"
+        }
+    ]
+}
