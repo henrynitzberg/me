@@ -40,7 +40,7 @@ function App() {
       />
 
       <Box sx={{ pb: "64px", display: "flex", justifyContent: "center" }}>
-        <Box sx={{ width: "75%", minWidth: 700, maxWidth: 750 }}>
+        <Box sx={{ width: { xs: "95%", md: "75%" }, maxWidth: 750 }}>
           <Tab />
         </Box>
       </Box>

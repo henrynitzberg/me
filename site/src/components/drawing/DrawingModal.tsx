@@ -43,8 +43,12 @@ export default function DrawingModal({
       <Box
         sx={{
           display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          width: { xs: "90vw", sm: "auto" },
           maxWidth: "90vw",
+          maxHeight: "90vh",
           outline: "none",
+          position: "relative",
         }}
       >
         {/* Prev arrow */}
@@ -52,23 +56,28 @@ export default function DrawingModal({
           onClick={onPrev}
           sx={{
             position: "absolute",
-            left: "calc(5vw - 48px)",
-            top: "50%",
-            transform: "translateY(-50%)",
+            left: { xs: "8px", sm: "calc(5vw - 48px)" },
+            top: { xs: "auto", sm: "50%" },
+            bottom: { xs: "8px", sm: "auto" },
+            transform: { xs: "none", sm: "translateY(-50%)" },
             cursor: "pointer",
             color: "#fff",
             display: "flex",
             alignItems: "center",
             opacity: 0.7,
+            bgcolor: { xs: "rgba(0,0,0,0.35)", sm: "transparent" },
+            borderRadius: { xs: "50%", sm: 0 },
+            p: { xs: "2px", sm: 0 },
             "&:hover": { opacity: 1 },
             transition: "opacity 150ms",
+            zIndex: 1,
           }}
         >
           <ChevronLeft size={40} />
         </Box>
 
-        {/* Image panel — sized to image exactly, no padding */}
-        <Box sx={{ flexShrink: 0, bgcolor: "#111", display: "flex" }}>
+        {/* Image panel */}
+        <Box sx={{ flexShrink: 0, bgcolor: { xs: "transparent", sm: "#111" }, display: "flex", justifyContent: "center" }}>
           {selected && (
             <Box
               component="img"
@@ -76,8 +85,8 @@ export default function DrawingModal({
               alt={selected.title}
               sx={{
                 display: "block",
-                maxHeight: "90vh",
-                maxWidth: "calc(90vw - 280px)",
+                maxHeight: { xs: "55vh", sm: "90vh" },
+                maxWidth: { xs: "90vw", sm: "calc(90vw - 280px)" },
                 width: "auto",
                 height: "auto",
               }}
@@ -88,7 +97,7 @@ export default function DrawingModal({
         {/* Info panel */}
         <Box
           sx={{
-            width: "280px",
+            width: { xs: "90vw", sm: "280px" },
             flexShrink: 0,
             bgcolor: "#fff",
             p: "32px 24px",
@@ -96,6 +105,7 @@ export default function DrawingModal({
             flexDirection: "column",
             position: "relative",
             overflowY: "auto",
+            maxHeight: { xs: "35vh", sm: "90vh" },
           }}
         >
           <Box
@@ -146,16 +156,21 @@ export default function DrawingModal({
           onClick={onNext}
           sx={{
             position: "absolute",
-            right: "calc(5vw - 48px)",
-            top: "50%",
-            transform: "translateY(-50%)",
+            right: { xs: "8px", sm: "calc(5vw - 48px)" },
+            top: { xs: "auto", sm: "50%" },
+            bottom: { xs: "8px", sm: "auto" },
+            transform: { xs: "none", sm: "translateY(-50%)" },
             cursor: "pointer",
             color: "#fff",
             display: "flex",
             alignItems: "center",
             opacity: 0.7,
+            bgcolor: { xs: "rgba(0,0,0,0.35)", sm: "transparent" },
+            borderRadius: { xs: "50%", sm: 0 },
+            p: { xs: "2px", sm: 0 },
             "&:hover": { opacity: 1 },
             transition: "opacity 150ms",
+            zIndex: 1,
           }}
         >
           <ChevronRight size={40} />

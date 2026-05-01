@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { Box, ImageList, ImageListItem, Typography } from "@mui/material";
+import { Box, ImageList, ImageListItem, Typography, useMediaQuery, useTheme } from "@mui/material";
 import TabHeader from "../TabHeader";
 import ClimbingModal from "./ClimbingModal";
 import { climbs } from "../../content/climbing";
 
 export default function Climbing() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(theme.breakpoints.down("md"));
 
   const prev = () =>
     setSelectedIndex((i) =>
@@ -28,7 +31,7 @@ export default function Climbing() {
         }
       />
       {
-        <ImageList variant="masonry" cols={3} gap={12} sx={{ mt: "12px" }}>
+        <ImageList variant="masonry" cols={isMobile ? 1 : isTablet ? 2 : 3} gap={12} sx={{ mt: "12px" }}>
           {climbs.map((climb, i) => (
             <ImageListItem
               key={climb.image}

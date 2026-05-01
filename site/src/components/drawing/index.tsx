@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Box, ImageList, ImageListItem } from "@mui/material";
+import { Box, ImageList, ImageListItem, useMediaQuery, useTheme } from "@mui/material";
 import TabHeader from "../TabHeader";
 import DrawingModal from "./DrawingModal";
 import { works } from "../../content/drawing";
 
 export default function Drawing({ preview = false }: { preview?: boolean }) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const isMobile = useMediaQuery(useTheme().breakpoints.down("sm"));
 
   const prev = () =>
     setSelectedIndex((i) =>
@@ -31,7 +32,7 @@ export default function Drawing({ preview = false }: { preview?: boolean }) {
       />
 
       {!preview && (
-        <ImageList variant="masonry" cols={2} gap={12} sx={{ mt: "12px" }}>
+        <ImageList variant="masonry" cols={isMobile ? 1 : 2} gap={12} sx={{ mt: "12px" }}>
           {works.map((work, i) => (
             <ImageListItem key={work.image} onClick={() => setSelectedIndex(i)}>
               <Box

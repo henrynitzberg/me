@@ -35,12 +35,12 @@ export default function MakingModal({ images, selectedIndex, onClose, onPrev, on
       sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
     >
       <Fade in={isOpen}>
-        <Box sx={{ position: "relative", outline: "none" }}>
+        <Box sx={{ position: "relative", outline: "none", maxWidth: "90vw" }}>
           <Box
             onClick={onPrev}
             sx={{
               position: "absolute",
-              left: "-48px",
+              left: { xs: "8px", sm: "-48px" },
               top: "50%",
               transform: "translateY(-50%)",
               cursor: "pointer",
@@ -48,6 +48,9 @@ export default function MakingModal({ images, selectedIndex, onClose, onPrev, on
               display: "flex",
               alignItems: "center",
               opacity: 0.7,
+              bgcolor: { xs: "rgba(0,0,0,0.35)", sm: "transparent" },
+              borderRadius: { xs: "50%", sm: 0 },
+              p: { xs: "2px", sm: 0 },
               "&:hover": { opacity: 1 },
               transition: "opacity 150ms",
             }}
@@ -73,7 +76,7 @@ export default function MakingModal({ images, selectedIndex, onClose, onPrev, on
             onClick={onNext}
             sx={{
               position: "absolute",
-              right: "-48px",
+              right: { xs: "8px", sm: "-48px" },
               top: "50%",
               transform: "translateY(-50%)",
               cursor: "pointer",
@@ -81,6 +84,9 @@ export default function MakingModal({ images, selectedIndex, onClose, onPrev, on
               display: "flex",
               alignItems: "center",
               opacity: 0.7,
+              bgcolor: { xs: "rgba(0,0,0,0.35)", sm: "transparent" },
+              borderRadius: { xs: "50%", sm: 0 },
+              p: { xs: "2px", sm: 0 },
               "&:hover": { opacity: 1 },
               transition: "opacity 150ms",
             }}

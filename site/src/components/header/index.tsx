@@ -78,8 +78,10 @@ export default function Header({
         variant="h6"
         sx={{
           color: "text.secondary",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
+          whiteSpace: { xs: "normal", sm: "nowrap" },
+          overflow: { xs: "visible", sm: "hidden" },
+          textAlign: { xs: "center", sm: "left" },
+          px: { xs: "16px", sm: 0 },
         }}
       >
         My life is mostly comprised of {tabText("making")}, {tabText("drawing")}
@@ -87,8 +89,7 @@ export default function Header({
       </Typography>
       <Box
         sx={{
-          width: "75%",
-          minWidth: 500,
+          width: { xs: "95%", md: "75%" },
           borderBottom: "1px solid #000",
           pt: "3px",
           height: "0px",
@@ -96,8 +97,7 @@ export default function Header({
       />
       <Box
         sx={{
-          width: "75%",
-          minWidth: 500,
+          width: { xs: "95%", md: "75%" },
           borderBottom: "1px solid #000",
           height: "18px",
           display: "flex",
@@ -107,7 +107,7 @@ export default function Header({
         }}
       >
         <Typography variant="body2">{version}</Typography>
-        <Typography variant="body2">Last Updated {last_updated}</Typography>
+        <Typography variant="body2" sx={{ display: { xs: "none", sm: "block" } }}>Last Updated {last_updated}</Typography>
         <Typography
           ref={menuAnchorRef}
           variant="body2"
