@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
-import Header from "./components/header";
-import Making from "./components/making";
-import Drawing from "./components/drawing";
-import Climbing from "./components/climbing";
+import Navbar from "./components/Navbar";
+import About from "./components/About";
+import { tokens } from "./theme";
 
-const TAB_COMPONENTS = { making: Making, drawing: Drawing, climbing: Climbing };
-const TABS = Object.keys(TAB_COMPONENTS);
+const TABS = ["about", "drawing", "climbing"];
 
 const getTabFromUrl = () => {
   const param = new URLSearchParams(window.location.search).get("tab");
@@ -28,21 +26,28 @@ function App() {
     setSelectedTab(newTab);
   };
 
-  const Tab = TAB_COMPONENTS[selectedTab as keyof typeof TAB_COMPONENTS];
-
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", width: "100vw" }}>
-      <Header
-        version="v1.0"
-        last_updated="April 30, 2026"
-        selectedTab={selectedTab}
-        handleTabChange={handleTabChange}
-      />
-
-      <Box sx={{ pb: "64px", display: "flex", justifyContent: "center" }}>
-        <Box sx={{ width: { xs: "95%", md: "75%" }, maxWidth: 750 }}>
-          <Tab />
-        </Box>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        backgroundColor: tokens.colors.background,
+      }}
+    >
+      <Navbar tabs={TABS} activeTab={selectedTab} onTabChange={handleTabChange} />
+      <Box
+        component="main"
+        sx={{
+          flex: 1,
+          px: tokens.spacing.gridMargin,
+          py: tokens.spacing.stackLg,
+          maxWidth: "1280px",
+          width: "100%",
+          mx: "auto",
+        }}
+      >
+        {selectedTab === "about" && <About />}
       </Box>
     </Box>
   );
