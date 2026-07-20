@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Fade, Modal } from "@mui/material";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface MakingModalProps {
   images: string[];
@@ -36,6 +36,27 @@ export default function MakingModal({ images, selectedIndex, onClose, onPrev, on
     >
       <Fade in={isOpen}>
         <Box sx={{ position: "relative", outline: "none", maxWidth: "90vw" }}>
+          <Box
+            onClick={onClose}
+            sx={{
+              position: "absolute",
+              top: "8px",
+              right: { xs: "8px", sm: "-44px" },
+              cursor: "pointer",
+              color: "#fff",
+              display: "flex",
+              alignItems: "center",
+              opacity: 0.7,
+              bgcolor: { xs: "rgba(0,0,0,0.35)", sm: "transparent" },
+              borderRadius: { xs: "50%", sm: 0 },
+              p: { xs: "4px", sm: 0 },
+              "&:hover": { opacity: 1 },
+              transition: "opacity 150ms",
+              zIndex: 1,
+            }}
+          >
+            <X size={20} />
+          </Box>
           <Box
             onClick={onPrev}
             sx={{

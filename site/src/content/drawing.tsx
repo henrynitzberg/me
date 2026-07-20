@@ -12,7 +12,7 @@ export const works = [
     image: "/drawing/Hopper Copy Copy.jpeg",
     title: "Hopper Copy Copy",
     description:
-      "Comission for client. Copy of Boulevard of Broken Dreams by Gottfried Helnwein, an homage to Nighthawks but with modern celebrities.",
+      "Commission for client. Copy of Boulevard of Broken Dreams by Gottfried Helnwein, an homage to Nighthawks but with modern celebrities.",
     date: "2024",
     media: "Acrylic on canvas",
   },
@@ -53,8 +53,8 @@ export const works = [
     media: "Acrylic on wood panel",
   },
   {
-    image: "/drawing/Aquaduct.jpeg",
-    title: "Aquaduct",
+    image: "/drawing/Aqueduct.jpeg",
+    title: "Aqueduct",
     description: "Scholastic Golden Key Award winner, 2021.",
     date: "2021",
     media: "Acrylic on wood panel",

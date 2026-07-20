@@ -7,7 +7,7 @@ export const projects = [
       "End to end digital ordering platform with both a customer-facing app and internal dashboard for Cell Media Manufacturer Nucleus Biologics. " +
       "Built with FastAPI, React, and PostgreSQL. Hosted on AWS. " +
       "Designed, developed, tested, and deployed by myself, and Zeno Marquis. " +
-      "Highly configurable with modules for cost estimation, document generation, in-platform signing",
+      "Highly configurable with modules for cost estimation, document generation, in-platform signing.",
     link: "https://nb-lux.com",
     extras: [
       "/making/nb-lux/login.jpg",

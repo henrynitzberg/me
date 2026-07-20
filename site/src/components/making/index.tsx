@@ -41,7 +41,7 @@ export default function Making() {
         text={
           <>
             I love coding, woodworking, CAD, really any sort of tinkering.
-             <p />
+            <br />
             At the moment I design and build software systems at{" "}
             <Typography
               component="a"
@@ -124,7 +124,7 @@ export default function Making() {
                   <Typography
                     variant="body1"
                     sx={{
-                      whiteSpace: expanded ? "" : "nowrap",
+                      whiteSpace: expanded ? "normal" : "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                     }}
@@ -162,9 +162,8 @@ export default function Making() {
                     )}
                     <Box sx={{ display: "flex", gap: "8px", mt: "12px" }}>
                       {project.extras.map((src, i) => (
-                        <Box>
+                        <Box key={i}>
                           <Box
-                            key={i}
                             onClick={(e) => {
                               e.stopPropagation();
                               openModal(project.extras, i);

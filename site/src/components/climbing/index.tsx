@@ -20,12 +20,12 @@ export default function Climbing() {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", p: "24px" }}>
       <TabHeader
-        src="climbing.jpg"
+        src="/climbing.jpg"
         text={
           <>
             Pictured left are the sunglasses of Rohan and myself, with two
             climbing gym brand nalgene bottles in the background. Taken on our
-            trip to Tahoe. <p /> Pictured below are some photos from various
+            trip to Tahoe. <br /> Pictured below are some photos from various
             outdoor excursions.
           </>
         }

@@ -21,7 +21,9 @@ export default function Header({
   const menuAnchorRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    TypeHeader({ setHeader });
+    const controller = new AbortController();
+    TypeHeader(setHeader, controller.signal);
+    return () => controller.abort();
   }, []);
 
   const tabText = (text: string) => {
