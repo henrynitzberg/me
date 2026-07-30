@@ -1,6 +1,19 @@
 export const projects = [
   {
-    image: "/making/nb-lux/login.jpg",
+    image: "/making/aipolicydb/states.jpg",
+    title: "AI Policy Database",
+    date: "June, 2025",
+    description:
+      "Worked with Zeno Marquis to revamp his CHAI project: A comprehensive, automatically updating database of American artificial intelligence policy with over 4,000 entries across all 50 states, Washington D.C., and federal agencies.",
+    link: "https://aipolicydb.com",
+    extras: [
+      "/making/aipolicydb/dashboard.jpg",
+      "/making/aipolicydb/search.jpg",
+      "/making/aipolicydb/states.jpg",
+    ],
+  },
+  {
+    image: "/making/nb-lux/splash.jpg",
     title: "NB-Lux",
     date: "Q1, 2025",
     description:
@@ -10,6 +23,7 @@ export const projects = [
       "Highly configurable with modules for cost estimation, document generation, in-platform signing.",
     link: "https://nb-lux.com",
     extras: [
+      "/making/nb-lux/splash.jpg",
       "/making/nb-lux/login.jpg",
       "/making/nb-lux/dashboard.jpg",
       "/making/nb-lux/orders.jpg",
