@@ -1,6 +1,11 @@
-import { useEffect, useState } from "react";
-import { Box, Fade, Modal, Typography } from "@mui/material";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import Fade from "@mui/material/Fade";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import GlassBox from "../GlassBox/GlassBox";
+import GlassIconButton from "../GlassBox/GlassIconButton";
 import { works } from "../../content/drawing";
 
 interface DrawingModalProps {
@@ -10,7 +15,17 @@ interface DrawingModalProps {
   onNext: () => void;
 }
 
-export default function DrawingModal({
+const IMAGE_FRAME_RADIUS = 20;
+const IMAGE_PADDING = 10;
+const NAV_BUTTON_SIZE = 48;
+const CLOSE_BUTTON_SIZE = 40;
+
+// Same glass-frames-media-not-text split as TabHeader/ProjectDetails: the
+// image gets a glass frame (so it reads as a pane of glass over the
+// darkened backdrop, not just a plain picture), the title/date/description
+// stay plain text next to it, and prev/next/close are the same circular
+// glass buttons as the AppBar's back button.
+function DrawingModal({
   selectedIndex,
   onClose,
   onPrev,
@@ -24,7 +39,26 @@ export default function DrawingModal({
   const isOpen = selectedIndex !== null;
   const selected = displayedIndex !== null ? works[displayedIndex] : null;
 
-  const handleKey = (e: React.KeyboardEvent) => {
+  const imageRef = useRef<HTMLDivElement>(null);
+  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+
+  useLayoutEffect(() => {
+    const el = imageRef.current;
+    if (!el) return;
+
+    const measure = () =>
+      setImageSize({ width: el.offsetWidth, height: el.offsetHeight });
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+    // re-measure whenever the displayed work changes, since a differently
+    // shaped image can change the frame's own size even at the same
+    // max-height/max-width constraints
+  }, [selected?.image]);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowLeft") onPrev();
     if (e.key === "ArrowRight") onNext();
     if (e.key === "Escape") onClose();
@@ -34,149 +68,169 @@ export default function DrawingModal({
     <Modal
       open={isOpen}
       onClose={onClose}
-      onKeyDown={handleKey}
+      onKeyDown={handleKeyDown}
       closeAfterTransition
       slotProps={{ backdrop: { sx: { bgcolor: "rgba(0, 0, 0, 0.85)" } } }}
       sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
     >
       <Fade in={isOpen}>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", sm: "row" },
-          width: { xs: "90vw", sm: "auto" },
-          maxWidth: "90vw",
-          maxHeight: "90vh",
-          outline: "none",
-          position: "relative",
-        }}
-      >
-        {/* Prev arrow */}
-        <Box
-          onClick={onPrev}
-          sx={{
-            position: "absolute",
-            left: { xs: "8px", sm: "calc(5vw - 48px)" },
-            top: { xs: "auto", sm: "50%" },
-            bottom: { xs: "8px", sm: "auto" },
-            transform: { xs: "none", sm: "translateY(-50%)" },
-            cursor: "pointer",
-            color: "#fff",
-            display: "flex",
-            alignItems: "center",
-            opacity: 0.7,
-            bgcolor: { xs: "rgba(0,0,0,0.35)", sm: "transparent" },
-            borderRadius: { xs: "50%", sm: 0 },
-            p: { xs: "2px", sm: 0 },
-            "&:hover": { opacity: 1 },
-            transition: "opacity 150ms",
-            zIndex: 1,
-          }}
-        >
-          <ChevronLeft size={40} />
-        </Box>
-
-        {/* Image panel */}
-        <Box sx={{ flexShrink: 0, bgcolor: { xs: "transparent", sm: "#111" }, display: "flex", justifyContent: "center" }}>
-          {selected && (
-            <Box
-              component="img"
-              src={selected.image}
-              alt={selected.title}
-              sx={{
-                display: "block",
-                maxHeight: { xs: "55vh", sm: "90vh" },
-                maxWidth: { xs: "90vw", sm: "calc(90vw - 280px)" },
-                width: "auto",
-                height: "auto",
-              }}
-            />
-          )}
-        </Box>
-
-        {/* Info panel */}
         <Box
           sx={{
-            width: { xs: "90vw", sm: "280px" },
-            flexShrink: 0,
-            bgcolor: "#fff",
-            p: "32px 24px",
-            display: "flex",
-            flexDirection: "column",
             position: "relative",
-            overflowY: "auto",
-            maxHeight: { xs: "35vh", sm: "90vh" },
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: { xs: "stretch", sm: "flex-start" },
+            gap: "24px",
+            width: { xs: "90vw", sm: "auto" },
+            maxWidth: "90vw",
+            maxHeight: "90vh",
+            outline: "none",
           }}
         >
           <Box
-            onClick={onClose}
             sx={{
               position: "absolute",
-              top: "24px",
-              right: "24px",
-              cursor: "pointer",
-              opacity: 0.75,
-              "&:hover": { opacity: 1 },
-              "&:active": { opacity: 0.5 },
-              transition: "opacity 150ms",
+              left: { xs: "8px", sm: "-64px" },
+              top: "50%",
+              transform: "translateY(-50%)",
+              zIndex: 2,
             }}
           >
-            <X size={18} />
+            <GlassIconButton
+              size={NAV_BUTTON_SIZE}
+              onClick={onPrev}
+              aria-label="Previous"
+            >
+              <ChevronLeft size={24} />
+            </GlassIconButton>
           </Box>
 
-          {selected && (
-            <>
-              <Typography
-                variant="h6"
-                sx={{ fontWeight: "bold", pr: "24px", lineHeight: 1.3 }}
-              >
-                {selected.title}
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{ mt: "2px", color: "text.secondary" }}
-              >
-                {selected.date} · {selected.media}
-              </Typography>
-              <Box
-                sx={{
-                  borderBottom: "1px solid #ccc",
-                  width: "48px",
-                  mt: "12px",
-                  mb: "16px",
-                }}
-              />
-              <Typography variant="body1">{selected.description}</Typography>
-            </>
-          )}
-        </Box>
+          <Box
+            sx={{
+              position: "absolute",
+              top: { xs: "-56px", sm: "-56px" },
+              right: 0,
+              zIndex: 2,
+            }}
+          >
+            <GlassIconButton
+              size={CLOSE_BUTTON_SIZE}
+              onClick={onClose}
+              aria-label="Close"
+            >
+              <X size={18} />
+            </GlassIconButton>
+          </Box>
 
-        {/* Next arrow */}
-        <Box
-          onClick={onNext}
-          sx={{
-            position: "absolute",
-            right: { xs: "8px", sm: "calc(5vw - 48px)" },
-            top: { xs: "auto", sm: "50%" },
-            bottom: { xs: "8px", sm: "auto" },
-            transform: { xs: "none", sm: "translateY(-50%)" },
-            cursor: "pointer",
-            color: "#fff",
-            display: "flex",
-            alignItems: "center",
-            opacity: 0.7,
-            bgcolor: { xs: "rgba(0,0,0,0.35)", sm: "transparent" },
-            borderRadius: { xs: "50%", sm: 0 },
-            p: { xs: "2px", sm: 0 },
-            "&:hover": { opacity: 1 },
-            transition: "opacity 150ms",
-            zIndex: 1,
-          }}
-        >
-          <ChevronRight size={40} />
+          <Box
+            sx={{
+              position: "relative",
+              flexShrink: 0,
+              // the column layout's alignItems: "stretch" on xs is only
+              // there for the info panel below, which otherwise wants to
+              // span the full width - applied here too by default, it
+              // stretches this box (and the plain-block imageRef div inside
+              // it) out to the full column width regardless of the image's
+              // own rendered size, so the measured imageSize (and the glass
+              // frame sized from it) ends up far wider than the image
+              // itself. Overriding back to shrink-to-content on xs is what
+              // keeps the frame hugging the actual image.
+              alignSelf: { xs: "center", sm: "flex-start" },
+            }}
+          >
+            {imageSize.width > 0 && imageSize.height > 0 && (
+              <Box sx={{ position: "absolute", inset: 0, zIndex: 0 }}>
+                <GlassBox
+                  width={imageSize.width}
+                  height={imageSize.height}
+                  borderRadius={IMAGE_FRAME_RADIUS}
+                  backgroundOpacity={0.1}
+                />
+              </Box>
+            )}
+            <Box
+              ref={imageRef}
+              sx={{
+                position: "relative",
+                zIndex: 1,
+                p: `${IMAGE_PADDING}px`,
+              }}
+            >
+              {selected && (
+                <Box
+                  component="img"
+                  src={selected.image}
+                  alt={selected.title}
+                  draggable={false}
+                  sx={{
+                    display: "block",
+                    borderRadius: `${IMAGE_FRAME_RADIUS - IMAGE_PADDING}px`,
+                    maxHeight: { xs: "45vh", sm: "80vh" },
+                    maxWidth: { xs: "calc(90vw - 20px)", sm: "55vw" },
+                    width: "auto",
+                    height: "auto",
+                    objectFit: "contain",
+                  }}
+                />
+              )}
+            </Box>
+          </Box>
+
+          <Box
+            sx={{
+              width: { xs: "100%", sm: "260px" },
+              flexShrink: 0,
+              display: "flex",
+              flexDirection: "column",
+              maxHeight: { xs: "30vh", sm: "80vh" },
+              overflowY: "auto",
+            }}
+          >
+            {selected && (
+              <>
+                <Typography
+                  variant="h6"
+                  sx={{ color: "text.primary", fontWeight: "bold" }}
+                >
+                  {selected.title}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ color: "text.secondary", mt: "2px" }}
+                >
+                  {selected.date} ⋅ {selected.media}
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{ color: "text.secondary", mt: "16px" }}
+                >
+                  {selected.description}
+                </Typography>
+              </>
+            )}
+          </Box>
+
+          <Box
+            sx={{
+              position: "absolute",
+              right: { xs: "8px", sm: "-64px" },
+              top: "50%",
+              transform: "translateY(-50%)",
+              zIndex: 2,
+            }}
+          >
+            <GlassIconButton
+              size={NAV_BUTTON_SIZE}
+              onClick={onNext}
+              aria-label="Next"
+            >
+              <ChevronRight size={24} />
+            </GlassIconButton>
+          </Box>
         </Box>
-      </Box>
       </Fade>
     </Modal>
   );
 }
+
+export default DrawingModal;

@@ -1,6 +1,11 @@
-import { useEffect, useState } from "react";
-import { Box, Fade, Modal, Typography } from "@mui/material";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import Fade from "@mui/material/Fade";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import GlassBox from "../GlassBox/GlassBox";
+import GlassIconButton from "../GlassBox/GlassIconButton";
 import { climbs } from "../../content/climbing";
 
 interface ClimbingModalProps {
@@ -10,7 +15,21 @@ interface ClimbingModalProps {
   onNext: () => void;
 }
 
-export default function ClimbingModal({ selectedIndex, onClose, onPrev, onNext }: ClimbingModalProps) {
+const IMAGE_FRAME_RADIUS = 20;
+const IMAGE_PADDING = 10;
+const NAV_BUTTON_SIZE = 48;
+const CLOSE_BUTTON_SIZE = 40;
+
+// Same shape as DrawingModal (glass-framed image, circular glass nav/close
+// buttons), just without a side info panel - climbs only carry a title and
+// date, so that lives as a caption under the image instead of a whole
+// second column next to it.
+function ClimbingModal({
+  selectedIndex,
+  onClose,
+  onPrev,
+  onNext,
+}: ClimbingModalProps) {
   const [displayedIndex, setDisplayedIndex] = useState(selectedIndex);
   useEffect(() => {
     if (selectedIndex !== null) setDisplayedIndex(selectedIndex);
@@ -19,7 +38,23 @@ export default function ClimbingModal({ selectedIndex, onClose, onPrev, onNext }
   const isOpen = selectedIndex !== null;
   const selected = displayedIndex !== null ? climbs[displayedIndex] : null;
 
-  const handleKey = (e: React.KeyboardEvent) => {
+  const imageRef = useRef<HTMLDivElement>(null);
+  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+
+  useLayoutEffect(() => {
+    const el = imageRef.current;
+    if (!el) return;
+
+    const measure = () =>
+      setImageSize({ width: el.offsetWidth, height: el.offsetHeight });
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [selected?.image]);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowLeft") onPrev();
     if (e.key === "ArrowRight") onNext();
     if (e.key === "Escape") onClose();
@@ -29,114 +64,128 @@ export default function ClimbingModal({ selectedIndex, onClose, onPrev, onNext }
     <Modal
       open={isOpen}
       onClose={onClose}
-      onKeyDown={handleKey}
+      onKeyDown={handleKeyDown}
       closeAfterTransition
-      slotProps={{ backdrop: { sx: { bgcolor: "rgba(0,0,0,0.85)" } } }}
+      slotProps={{ backdrop: { sx: { bgcolor: "rgba(0, 0, 0, 0.85)" } } }}
       sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
     >
       <Fade in={isOpen}>
-        <Box sx={{ position: "relative", outline: "none", display: "flex", maxWidth: "90vw" }}>
+        <Box
+          sx={{
+            position: "relative",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: { xs: "90vw", sm: "auto" },
+            maxWidth: "90vw",
+            maxHeight: "90vh",
+            outline: "none",
+          }}
+        >
           <Box
-            onClick={onClose}
             sx={{
               position: "absolute",
-              top: "8px",
-              right: { xs: "8px", sm: "-44px" },
-              cursor: "pointer",
-              color: "#fff",
-              display: "flex",
-              alignItems: "center",
-              opacity: 0.7,
-              bgcolor: { xs: "rgba(0,0,0,0.35)", sm: "transparent" },
-              borderRadius: { xs: "50%", sm: 0 },
-              p: { xs: "4px", sm: 0 },
-              "&:hover": { opacity: 1 },
-              transition: "opacity 150ms",
-              zIndex: 1,
-            }}
-          >
-            <X size={20} />
-          </Box>
-          {/* Prev arrow */}
-          <Box
-            onClick={onPrev}
-            sx={{
-              position: "absolute",
-              left: { xs: "8px", sm: "-48px" },
+              left: { xs: "8px", sm: "-64px" },
               top: "50%",
               transform: "translateY(-50%)",
-              cursor: "pointer",
-              color: "#fff",
-              display: "flex",
-              alignItems: "center",
-              opacity: 0.7,
-              bgcolor: { xs: "rgba(0,0,0,0.35)", sm: "transparent" },
-              borderRadius: { xs: "50%", sm: 0 },
-              p: { xs: "2px", sm: 0 },
-              "&:hover": { opacity: 1 },
-              transition: "opacity 150ms",
+              zIndex: 2,
             }}
           >
-            <ChevronLeft size={40} />
+            <GlassIconButton
+              size={NAV_BUTTON_SIZE}
+              onClick={onPrev}
+              aria-label="Previous"
+            >
+              <ChevronLeft size={24} />
+            </GlassIconButton>
           </Box>
 
-          {/* Image */}
-          {selected && (
-            <Box sx={{ position: "relative" }}>
-              <Box
-                component="img"
-                src={selected.image}
-                alt={selected.title}
-                sx={{
-                  display: "block",
-                  maxHeight: "90vh",
-                  maxWidth: "90vw",
-                  width: "auto",
-                  height: "auto",
-                }}
-              />
-              {/* Title / date overlay */}
-              <Box
-                sx={{
-                  position: "absolute",
-                  bottom: "12px",
-                  right: "12px",
-                  bgcolor: "#fff",
-                  px: "10px",
-                  py: "6px",
-                }}
-              >
-                <Typography variant="body2">
-                  <strong>{selected.title}</strong> · {selected.date}
-                </Typography>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "-56px",
+              right: 0,
+              zIndex: 2,
+            }}
+          >
+            <GlassIconButton
+              size={CLOSE_BUTTON_SIZE}
+              onClick={onClose}
+              aria-label="Close"
+            >
+              <X size={18} />
+            </GlassIconButton>
+          </Box>
+
+          <Box sx={{ position: "relative", flexShrink: 0 }}>
+            {imageSize.width > 0 && imageSize.height > 0 && (
+              <Box sx={{ position: "absolute", inset: 0, zIndex: 0 }}>
+                <GlassBox
+                  width={imageSize.width}
+                  height={imageSize.height}
+                  borderRadius={IMAGE_FRAME_RADIUS}
+                  backgroundOpacity={0.1}
+                />
               </Box>
+            )}
+            <Box
+              ref={imageRef}
+              sx={{
+                position: "relative",
+                zIndex: 1,
+                p: `${IMAGE_PADDING}px`,
+              }}
+            >
+              {selected && (
+                <Box
+                  component="img"
+                  src={selected.image}
+                  alt={selected.title}
+                  draggable={false}
+                  sx={{
+                    display: "block",
+                    borderRadius: `${IMAGE_FRAME_RADIUS - IMAGE_PADDING}px`,
+                    maxHeight: "75vh",
+                    maxWidth: { xs: "calc(90vw - 20px)", sm: "80vw" },
+                    width: "auto",
+                    height: "auto",
+                    objectFit: "contain",
+                  }}
+                />
+              )}
             </Box>
+          </Box>
+
+          {selected && (
+            <Typography
+              variant="body2"
+              sx={{ color: "text.secondary", mt: "12px" }}
+            >
+              <strong>{selected.title}</strong> ⋅ {selected.date}
+            </Typography>
           )}
 
-          {/* Next arrow */}
           <Box
-            onClick={onNext}
             sx={{
               position: "absolute",
-              right: { xs: "8px", sm: "-48px" },
+              right: { xs: "8px", sm: "-64px" },
               top: "50%",
               transform: "translateY(-50%)",
-              cursor: "pointer",
-              color: "#fff",
-              display: "flex",
-              alignItems: "center",
-              opacity: 0.7,
-              bgcolor: { xs: "rgba(0,0,0,0.35)", sm: "transparent" },
-              borderRadius: { xs: "50%", sm: 0 },
-              p: { xs: "2px", sm: 0 },
-              "&:hover": { opacity: 1 },
-              transition: "opacity 150ms",
+              zIndex: 2,
             }}
           >
-            <ChevronRight size={40} />
+            <GlassIconButton
+              size={NAV_BUTTON_SIZE}
+              onClick={onNext}
+              aria-label="Next"
+            >
+              <ChevronRight size={24} />
+            </GlassIconButton>
           </Box>
         </Box>
       </Fade>
     </Modal>
   );
 }
+
+export default ClimbingModal;

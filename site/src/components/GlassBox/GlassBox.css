@@ -1,0 +1,93 @@
+@property --hole-alpha {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0.4;
+}
+
+@property --background-color {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: rgba(0, 0, 0, 0.4);
+}
+
+@property --conic-highlight {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(255, 255, 255, 0.5);
+}
+
+.glass-box {
+  --mouse-x: -9999px;
+  --mouse-y: -9999px;
+  --hole-alpha: var(--background-opacity);
+  will-change: transform;
+  /* any scale() on this element OR any of its ancestors - even sitting
+     still, not just mid-transition, and even at self (scale=1 is fine,
+     scale=1.2 is not) - breaks Chromium's backdrop-filter capture here: the
+     raw, unfiltered backdrop composites through underneath the correctly
+     filtered result instead of being replaced by it. Plain translate() is
+     fine, only scale() triggers it. This class's own scale(), below and in
+     :hover, is exactly that shape of risk - it hasn't caused visible
+     trouble yet only because hoverBounceDeltaScale/clickBounceDeltaScale
+     deltas used so far are tiny. Do not add a "grow while active" scale
+     here or on a wrapping div (see TabSwitcher.tsx, which hit this at
+     scale(1.2) and had to grow via width/height instead). */
+  transform: translateZ(0) scale(1);
+  transition:
+    transform 0.35s cubic-bezier(0.34, 3, 0.64, 1),
+    --hole-alpha 0.3s ease,
+    --background-color 0.1s ease,
+    --conic-highlight 0.1s ease;
+  width: var(--width);
+  height: var(--height);
+  border-radius: var(--border-radius);
+  background: radial-gradient(
+    calc(var(--height) * 1.2) circle at var(--mouse-x) var(--mouse-y),
+    color-mix(
+        in srgb,
+        var(--background-color)
+          calc(var(--hole-alpha) / var(--background-opacity) * 100%),
+        transparent
+      )
+      0%,
+    var(--background-color) 100%
+  );
+}
+
+.glass-box:hover {
+  transform: translateZ(0) scale(var(--hover-scale, 1));
+  --hole-alpha: calc(var(--background-opacity) * 0.6);
+}
+
+/* border */
+.glass-box::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background:
+    radial-gradient(
+      calc(var(--height) * 0.8) circle at var(--mouse-x) var(--mouse-y),
+      rgba(255, 255, 255, 0.9),
+      transparent 100%
+    ),
+    conic-gradient(
+      from 45deg,
+      var(--conic-transparent) 0deg,
+      var(--conic-highlight) 90deg,
+      var(--conic-transparent) 180deg,
+      var(--conic-highlight) 270deg,
+      var(--conic-transparent) 360deg
+    );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 3;
+}
