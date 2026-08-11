@@ -25,6 +25,7 @@ function Making({ selectedProject, onSelectProject }: MakingProps) {
     <Box sx={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       <TabHeader
         src="/making.jpg"
+        alt="A few of the things I've made"
         heading={
           <Typography
             variant="h5"

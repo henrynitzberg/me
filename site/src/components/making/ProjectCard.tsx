@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import GlassBox from "../GlassBox/GlassBox";
 import { projects } from "../../content/making";
+import { clickableProps } from "../../utils/clickable";
 
 const CARD_BORDER_RADIUS = 20;
 const IMAGE_ASPECT_RATIO = "16 / 10";
@@ -37,7 +38,7 @@ function ProjectCard({ project, onClick }: ProjectCardProps) {
 
   return (
     <Box
-      onClick={onClick}
+      {...clickableProps(onClick)}
       data-cursor="pointer"
       sx={{
         position: "relative",
@@ -81,6 +82,7 @@ function ProjectCard({ project, onClick }: ProjectCardProps) {
         <Box
           component="img"
           src={project.image}
+          alt={project.title}
           draggable={false}
           sx={{
             display: "block",

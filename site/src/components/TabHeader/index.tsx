@@ -5,6 +5,7 @@ import GlassBox from "../GlassBox/GlassBox";
 
 interface TabHeaderProps {
   src: string;
+  alt: string;
   text: string | ReactNode;
   heading?: ReactNode;
 }
@@ -19,7 +20,7 @@ const IMAGE_PADDING = 10;
 // is exactly the kind of content a glass frame reads well around: it warps
 // the starfield behind it like a real pane of glass would, the same
 // relationship the AppBar itself has with the page.
-function TabHeader({ src, text, heading }: TabHeaderProps) {
+function TabHeader({ src, alt, text, heading }: TabHeaderProps) {
   const imageRef = useRef<HTMLDivElement>(null);
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
 
@@ -63,6 +64,7 @@ function TabHeader({ src, text, heading }: TabHeaderProps) {
           <Box
             component="img"
             src={src}
+            alt={alt}
             draggable={false}
             sx={{
               display: "block",

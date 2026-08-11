@@ -37,11 +37,12 @@ function Cursor() {
   // Withheld until the first real pointer position is known, so the
   // circle doesn't flash into view at its default top-left origin.
   const [ready, setReady] = useState(false);
-  const [supportsCursor, setSupportsCursor] = useState(false);
+  const [supportsCursor, setSupportsCursor] = useState(
+    () => window.matchMedia(SUPPORTS_CURSOR_QUERY).matches,
+  );
 
   useEffect(() => {
     const mq = window.matchMedia(SUPPORTS_CURSOR_QUERY);
-    setSupportsCursor(mq.matches);
     const onChange = (e: MediaQueryListEvent) => setSupportsCursor(e.matches);
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
@@ -149,6 +150,5 @@ function Cursor() {
     </>
   );
 }
-// rgb(27, 36, 192) is the same blue as the AppBar's active tab highlight, so
 
 export default Cursor;

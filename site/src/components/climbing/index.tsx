@@ -8,6 +8,7 @@ import { useTheme } from "@mui/material/styles";
 import TabHeader from "../TabHeader";
 import ClimbingModal from "./ClimbingModal";
 import { climbs } from "../../content/climbing";
+import { clickableProps } from "../../utils/clickable";
 
 function Climbing() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -26,6 +27,7 @@ function Climbing() {
     <Box sx={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       <TabHeader
         src="/climbing.jpg"
+        alt="Sunglasses belonging to Rohan and me, with two climbing-gym-branded Nalgene bottles in the background"
         heading={
           <Typography variant="h5" sx={{ color: "text.primary" }}>
             Climbing
@@ -33,11 +35,12 @@ function Climbing() {
         }
         text={
           <>
-            Pictured left are the sunglasses of Rohan and myself, with two
-            climbing gym brand nalgene bottles in the background. Taken on
+            The sunglasses in the photo are Rohan's and mine, with two
+            climbing-gym-branded Nalgene bottles in the background - taken on
             our trip to Tahoe.
             <br />
-            Pictured below are some photos from various outdoor excursions.
+            The grid further down has photos from various outdoor
+            excursions.
           </>
         }
       />
@@ -51,7 +54,8 @@ function Climbing() {
         {climbs.map((climb, i) => (
           <ImageListItem
             key={climb.image}
-            onClick={() => setSelectedIndex(i)}
+            aria-label={climb.title}
+            {...clickableProps(() => setSelectedIndex(i))}
             data-cursor="pointer"
           >
             <Box

@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
@@ -31,10 +31,17 @@ function DrawingModal({
   onPrev,
   onNext,
 }: DrawingModalProps) {
+  // Mirrors selectedIndex, but only forward - closing sets selectedIndex to
+  // null while the modal is still fading out, and this is what keeps the
+  // last real work on screen through that fade instead of it disappearing
+  // early. Adjusted directly during render (React's sanctioned pattern for
+  // "derive state from a prop, but not on every change") rather than in an
+  // effect: it only ever needs to catch up to selectedIndex, never the
+  // reverse, so there's no risk of the two fighting each other.
   const [displayedIndex, setDisplayedIndex] = useState(selectedIndex);
-  useEffect(() => {
-    if (selectedIndex !== null) setDisplayedIndex(selectedIndex);
-  }, [selectedIndex]);
+  if (selectedIndex !== null && selectedIndex !== displayedIndex) {
+    setDisplayedIndex(selectedIndex);
+  }
 
   const isOpen = selectedIndex !== null;
   const selected = displayedIndex !== null ? works[displayedIndex] : null;

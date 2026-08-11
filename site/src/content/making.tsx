@@ -17,10 +17,10 @@ export const projects = [
     title: "NB-Lux",
     date: "Q1, 2025",
     description:
-      "End to end digital ordering platform with both a customer-facing app and internal dashboard for Cell Media Manufacturer Nucleus Biologics. " +
+      "End to end digital ordering platform with both a customer-facing app and internal dashboard for cell media manufacturer Nucleus Biologics. " +
       "Built with FastAPI, React, and PostgreSQL. Hosted on AWS. " +
       "Designed, developed, tested, and deployed by myself, and Zeno Marquis. " +
-      "Highly configurable with modules for cost estimation, document generation, in-platform signing.",
+      "Highly configurable with modules for cost estimation, document generation, and in-platform signing.",
     link: "https://nb-lux.com",
     extras: [
       "/making/nb-lux/splash.jpg",

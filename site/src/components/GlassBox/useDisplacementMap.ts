@@ -377,9 +377,11 @@ export function useDisplacementMap(
 ): string | null {
   const [mapUrl, setMapUrl] = useState<string | null>(null);
 
+  // Run off the critical path — generation is fast (<10ms for typical card
+  // sizes) but we don't want to block the first render, so this can't be
+  // computed during render itself.
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
-    // Run off the critical path — generation is fast (<10ms for typical card
-    // sizes) but we don't want to block the first render
     const url = generateDisplacementMap(
       width,
       height,
@@ -391,7 +393,8 @@ export function useDisplacementMap(
       lipWidth,
     );
     setMapUrl(url);
-  }, [width, height, borderRadius, bezel, magnify, lipWidth]);
+  }, [width, height, borderRadius, ior, strength, bezel, magnify, lipWidth]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   return mapUrl;
 }

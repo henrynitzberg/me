@@ -72,11 +72,12 @@ function ProjectDetails({ project }: ProjectDetailsProps) {
 
       {project.extras.length > 0 && (
         <Box sx={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          {project.extras.map((src) => (
+          {project.extras.map((src, i) => (
             <Box
               key={src}
               component="img"
               src={src}
+              alt={`${project.title} photo ${i + 1}`}
               draggable={false}
               sx={{
                 display: "block",

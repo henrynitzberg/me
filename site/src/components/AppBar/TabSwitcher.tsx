@@ -9,6 +9,7 @@ import {
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import GlassBox from "../GlassBox/GlassBox";
+import { clickableProps } from "../../utils/clickable";
 
 const TABS = ["making", "drawing", "climbing"] as const;
 export type Tab = (typeof TABS)[number];
@@ -122,7 +123,6 @@ function TabSwitcher({ selectedTab, onSelectTab }: TabSwitcherProps) {
 
     window.addEventListener("resize", snapWithoutAnimating);
     return () => window.removeEventListener("resize", snapWithoutAnimating);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const snapTo = (tab: Tab) => {
@@ -251,6 +251,8 @@ function TabSwitcher({ selectedTab, onSelectTab }: TabSwitcherProps) {
   return (
     <Box
       ref={containerRef}
+      role="tablist"
+      aria-label="Section"
       sx={{
         position: "relative",
         display: "flex",
@@ -377,7 +379,8 @@ function TabSwitcher({ selectedTab, onSelectTab }: TabSwitcherProps) {
             }}
             component="span"
             variant="body1"
-            onClick={() => snapTo(tab)}
+            aria-selected={isSelected}
+            {...clickableProps(() => snapTo(tab), "tab")}
             data-cursor="pointer"
             sx={{
               // no `position` here (stays static): keeps this element out of

@@ -59,6 +59,10 @@ function AppBar({ selectedTab, onSelectTab, onBack }: AppBarProps) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Not render-time-computable: this reacts to onBack transitioning over
+  // time (mount now, unmount only after the fade timer/RAF finish), which
+  // needs real browser timers, not a value derivable from this render.
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     if (onBack) {
       setShouldRender(true);
@@ -77,6 +81,7 @@ function AppBar({ selectedTab, onSelectTab, onBack }: AppBarProps) {
     );
     return () => window.clearTimeout(timeout);
   }, [onBack]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const barWidth = onBack ? width - BACK_BUTTON_SIZE - BACK_BUTTON_GAP : width;
 

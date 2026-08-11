@@ -8,6 +8,7 @@ import { useTheme } from "@mui/material/styles";
 import TabHeader from "../TabHeader";
 import DrawingModal from "./DrawingModal";
 import { works } from "../../content/drawing";
+import { clickableProps } from "../../utils/clickable";
 
 function Drawing() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
@@ -24,6 +25,7 @@ function Drawing() {
     <Box sx={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       <TabHeader
         src="/drawing.jpeg"
+        alt="One of my drawings"
         heading={
           <Typography variant="h5" sx={{ color: "text.primary" }}>
             Drawing
@@ -56,7 +58,8 @@ function Drawing() {
         {works.map((work, i) => (
           <ImageListItem
             key={work.image}
-            onClick={() => setSelectedIndex(i)}
+            aria-label={work.title}
+            {...clickableProps(() => setSelectedIndex(i))}
             data-cursor="pointer"
           >
             <Box

@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
@@ -30,10 +30,12 @@ function ClimbingModal({
   onPrev,
   onNext,
 }: ClimbingModalProps) {
+  // See the identical comment in DrawingModal.tsx - same fade-out-without-
+  // clearing-content trick, mirrored here for climbs.
   const [displayedIndex, setDisplayedIndex] = useState(selectedIndex);
-  useEffect(() => {
-    if (selectedIndex !== null) setDisplayedIndex(selectedIndex);
-  }, [selectedIndex]);
+  if (selectedIndex !== null && selectedIndex !== displayedIndex) {
+    setDisplayedIndex(selectedIndex);
+  }
 
   const isOpen = selectedIndex !== null;
   const selected = displayedIndex !== null ? climbs[displayedIndex] : null;

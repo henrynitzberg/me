@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Box from "@mui/material/Box";
 import GlassBox from "./GlassBox";
+import { clickableProps } from "../../utils/clickable";
 
 interface GlassIconButtonProps {
   size?: number;
@@ -27,9 +28,9 @@ function GlassIconButton({
       backgroundOpacity={0.3}
       hoverBounceDeltaScale={0.04}
       clickBounceDeltaScale={0.06}
-      onClick={onClick}
       data-cursor="pointer"
       style={{ cursor: "pointer" }}
+      {...clickableProps(onClick)}
       {...rest}
     >
       <Box
