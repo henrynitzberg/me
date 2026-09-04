@@ -4,7 +4,7 @@ import AppBar, {
   APP_BAR_HEIGHT,
   APP_BAR_MARGIN,
 } from "./components/AppBar/AppBar";
-import { type Tab } from "./components/AppBar/TabSwitcher";
+import { TABS, type Tab } from "./components/AppBar/TabSwitcher";
 import Making from "./components/making";
 import Drawing from "./components/drawing";
 import Climbing from "./components/climbing";
@@ -16,9 +16,19 @@ import { projects } from "./content/making";
 
 const CONTENT_MAX_WIDTH = 800;
 const CONTENT_GAP_BELOW_BAR = 32;
+const TAB_QUERY_PARAM = "tab";
+
+function getTabFromLocation(): Tab {
+  const param = new URLSearchParams(window.location.search).get(
+    TAB_QUERY_PARAM,
+  );
+  return (TABS as readonly string[]).includes(param ?? "")
+    ? (param as Tab)
+    : "making";
+}
 
 function App() {
-  const [selectedTab, setSelectedTab] = useState<Tab>("making");
+  const [selectedTab, setSelectedTab] = useState<Tab>(getTabFromLocation);
   // Which project's detail view is open within the "making" tab, if any -
   // owned here (not inside Making) so the AppBar's back button can control
   // it directly. Making is a plain controlled component for this rather
@@ -40,10 +50,31 @@ function App() {
     window.scrollTo(0, 0);
   }, [selectedProject]);
 
+  // The browser back/forward button - including landing here from a tab
+  // switch's own pushState below - always goes through "popstate", so this
+  // is the one place that needs to read the URL back into state.
+  useEffect(() => {
+    const handlePopState = () => {
+      setSelectedProject(null);
+      setSelectedTab(getTabFromLocation());
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
   const handleSelectTab = (tab: Tab) => {
     // leaving the tab entirely invalidates whatever detail view was open
     setSelectedProject(null);
     setSelectedTab(tab);
+
+    // Re-selecting the already-active tab (a plain click on it, or a drag
+    // that settles back where it started) shouldn't push a redundant
+    // history entry - only an actual tab change should be a "back"-able step.
+    if (tab !== selectedTab) {
+      const url = new URL(window.location.href);
+      url.searchParams.set(TAB_QUERY_PARAM, tab);
+      window.history.pushState(null, "", url);
+    }
   };
 
   const handleGlowMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {

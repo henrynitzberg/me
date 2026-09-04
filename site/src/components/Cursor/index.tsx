@@ -2,11 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import Box from "@mui/material/Box";
 import GlobalStyles from "@mui/material/GlobalStyles";
 import { ChevronUp } from "lucide-react";
-import GlassBox from "../GlassBox/GlassBox";
 
-const CURSOR_SIZE = 32;
-const CLICK_SIZE = CURSOR_SIZE * 0.8;
-const HOVER_SIZE = CURSOR_SIZE * 1.2;
+const CURSOR_SIZE = 28;
+const CLICK_SIZE = CURSOR_SIZE * 0.6;
+const HOVER_SIZE = CURSOR_SIZE * 0.8;
 const DOT_SIZE = 7;
 
 // A custom cursor only makes sense with a real pointer to replace - touch
@@ -31,6 +30,11 @@ const POINTER_TARGET_SELECTOR = 'a, button, [data-cursor="pointer"]';
 function Cursor() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const sizeRef = useRef(CURSOR_SIZE);
+  // Latest raw pointer position, written on every mousemove but only read
+  // once per animation frame (see handleMove below) - decouples the DOM
+  // write + hit-test from however fast the input device actually fires.
+  const posRef = useRef({ x: 0, y: 0 });
+  const rafRef = useRef<number | null>(null);
 
   const [clicked, setClicked] = useState(false);
   const [hoveringTarget, setHoveringTarget] = useState(false);
@@ -56,15 +60,31 @@ function Cursor() {
   useEffect(() => {
     if (!supportsCursor) return;
 
-    const handleMove = (e: MouseEvent) => {
+    // mousemove can fire far faster than the screen repaints (especially on
+    // high-poll-rate mice/trackpads). Writing the transform and hit-testing
+    // with elementFromPoint on every single event was the main source of
+    // jank - collapsing them to once per animation frame keeps the cursor
+    // just as responsive (still updates every frame) without doing that
+    // work more often than a frame can actually show.
+    const applyFrame = () => {
+      rafRef.current = null;
+      const { x, y } = posRef.current;
+
       if (wrapperRef.current) {
         const half = sizeRef.current / 2;
-        wrapperRef.current.style.transform = `translate(${e.clientX - half}px, ${e.clientY - half}px)`;
+        wrapperRef.current.style.transform = `translate(${x - half}px, ${y - half}px)`;
       }
       setReady(true);
 
-      const target = document.elementFromPoint(e.clientX, e.clientY);
+      const target = document.elementFromPoint(x, y);
       setHoveringTarget(Boolean(target?.closest(POINTER_TARGET_SELECTOR)));
+    };
+
+    const handleMove = (e: MouseEvent) => {
+      posRef.current = { x: e.clientX, y: e.clientY };
+      if (rafRef.current === null) {
+        rafRef.current = requestAnimationFrame(applyFrame);
+      }
     };
     const handleDown = () => setClicked(true);
     const handleUp = () => setClicked(false);
@@ -77,6 +97,7 @@ function Cursor() {
       window.removeEventListener("mousemove", handleMove);
       window.removeEventListener("mousedown", handleDown);
       window.removeEventListener("mouseup", handleUp);
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
   }, [supportsCursor]);
 
@@ -103,15 +124,24 @@ function Cursor() {
           transition: "opacity 0.2s ease",
         }}
       >
-        <GlassBox
-          width={size}
-          height={size}
-          borderRadius={size / 2}
-          backgroundOpacity={0.2}
-          blur={1}
-          strength={20}
-          magnify={0.7}
-          style={{
+        {/* A plain blurred circle, not GlassBox's SVG feDisplacementMap
+            refraction filter - that filter is expensive to keep re-painting
+            behind an element that moves on every mousemove, and at this
+            size (32px) the liquid-glass distortion it buys isn't visible
+            anyway. Backdrop-filter blur alone is far cheaper and reads the
+            same at a glance. */}
+        <Box
+          sx={{
+            position: "relative",
+            width: size,
+            height: size,
+            borderRadius: "50%",
+            backgroundColor: hoveringTarget
+              ? "rgba(255, 255, 255, 0.5)"
+              : "rgba(255, 255, 255, 0.2)",
+            backdropFilter: "blur(6px)",
+            WebkitBackdropFilter: "blur(6px)",
+            border: "1px solid rgba(255, 255, 255, 0.35)",
             transition:
               "width 0.15s ease, height 0.15s ease, background-color 0.15s ease",
           }}
@@ -145,7 +175,7 @@ function Cursor() {
               }}
             />
           )}
-        </GlassBox>
+        </Box>
       </Box>
     </>
   );

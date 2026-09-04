@@ -11,7 +11,7 @@ import Typography from "@mui/material/Typography";
 import GlassBox from "../GlassBox/GlassBox";
 import { clickableProps } from "../../utils/clickable";
 
-const TABS = ["making", "drawing", "climbing"] as const;
+export const TABS = ["making", "drawing", "climbing"] as const;
 export type Tab = (typeof TABS)[number];
 
 const BUBBLE_HEIGHT = 36;
@@ -121,8 +121,27 @@ function TabSwitcher({ selectedTab, onSelectTab }: TabSwitcherProps) {
 
     snapWithoutAnimating();
 
+    // window's "resize" event only fires when the browser window itself
+    // changes size - it misses everything else that can shift these tab
+    // labels after the initial measurement: a web font finishing its swap
+    // and reflowing the text at different metrics, a late-loading image
+    // elsewhere on the page growing the document past the viewport height
+    // and toggling the scrollbar (which eats a few px of layout width
+    // without ever firing "resize"), etc. A ResizeObserver on the actual
+    // elements this measurement depends on catches all of those directly,
+    // whatever the cause, instead of trying to enumerate every trigger.
+    const observer = new ResizeObserver(snapWithoutAnimating);
+    if (containerRef.current) observer.observe(containerRef.current);
+    for (const tab of TABS) {
+      const el = tabRefs.current[tab];
+      if (el) observer.observe(el);
+    }
+
     window.addEventListener("resize", snapWithoutAnimating);
-    return () => window.removeEventListener("resize", snapWithoutAnimating);
+    return () => {
+      window.removeEventListener("resize", snapWithoutAnimating);
+      observer.disconnect();
+    };
   }, []);
 
   const snapTo = (tab: Tab) => {
