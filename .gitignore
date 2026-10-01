@@ -1,0 +1,8 @@
+# Raw turntable screenshots - source material only. The processed, keyed
+# WebP frames under site/public/ are what actually ships.
+captures/
+site/captures/
+
+.DS_Store
+
+.claude/
