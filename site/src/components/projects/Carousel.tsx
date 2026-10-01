@@ -95,7 +95,17 @@ function Carousel({
           },
         }}
       >
-        <Box sx={{ display: "flex", gap: 2, touchAction: "pan-y" }}>
+        <Box
+          sx={{
+            display: "flex",
+            touchAction: "pan-y",
+            // NOT `gap`: in loop mode Embla repositions slides with a
+            // transform, and a container gap is not part of that offset - so
+            // the seam between the last and first slide loses its spacing.
+            // Padding on each slide travels with it, so every join matches.
+            ml: -2,
+          }}
+        >
           {images.map((src, i) => (
             <Box
               key={src}
@@ -105,6 +115,9 @@ function Carousel({
                 // intrinsic size, and that silently overrides the basis.
                 flex: `0 0 ${slidePct}%`,
                 minWidth: 0,
+                // the gap, carried by the slide itself (border-box, so this
+                // sits inside the basis rather than widening it)
+                pl: 2,
                 aspectRatio: aspect, // fixes the track height between slides
                 display: "flex",
                 alignItems: "center",
