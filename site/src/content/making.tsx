@@ -163,9 +163,7 @@ export const projects: Project[] = [
         "I designed this custom computer case to enable myself to pack my desktop PC into a suitcase, and bring it back and forth between home and school. " +
         "The case was modeled in OnShape (inspired by the Skyreach 4 Mini), and is made of 3d printed ABS parts. The side panels were a generous gift from a friend: custom cut/formed aluminium sheets (Thanks, Bob!). " +
         "Internal highlights include a 3080, an Intel 12900k, and a Glorious Panda keyboard switch as the power button.",
-      extras: [
-        "/making/computer-case/life.webp",
-      ],
+      extras: ["/making/computer-case/life.webp"],
     },
   },
 ];
