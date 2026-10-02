@@ -15,7 +15,7 @@ export const projects: Project[] = [
     image: "/making/so101-human-teleop/title.webp",
     title: "SO-101 Human Teleop",
     slug: "so101-human-teleop",
-    date: "2025-09",
+    date: "2026-09",
     link: "https://github.com/henrynitzberg/SO101_Human_Teleop#readme",
     data: {
       video: "/making/so101-human-teleop/teleop.mp4",
@@ -31,7 +31,7 @@ export const projects: Project[] = [
     image: "/making/nb-lux/title.JPG",
     title: "NB-Lux",
     slug: "nb-lux",
-    date: "2025-08",
+    date: "2026-08",
     link: "https://nb-lux.com",
     data: {
       intro:
@@ -77,7 +77,7 @@ export const projects: Project[] = [
     image: "/making/aipolicydb/title.JPG",
     title: "AI Policy Database",
     slug: "aipolicydb",
-    date: "2025-06",
+    date: "2026-06",
     link: "https://aipolicydb.com",
     data: {
       embed: "https://aipolicydb.com",
